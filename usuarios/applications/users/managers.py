@@ -4,9 +4,11 @@ from django.contrib.auth.models import BaseUserManager
 
 class UserManager(BaseUserManager, models.Manager):
 
-    # def create_user(self):
+    # Alta de usuario
+    def create_user(self, username, email, password=None, **extra_fields):
+        return self._create_user(username, email, password, False, False, **extra_fields )
 
-    # funcion privada solo para crear un super administrador
+    # funcion privada solo para crear un usuario
     def _create_user(self, username, email, password, is_staff, is_superuser, **extra_fields):
 
         usuario = self.model(
