@@ -1,0 +1,14 @@
+<h1>
+    {{titulo}}
+</h1>
+<br>
+
+<form method="POST" action="" name="form" id="form">
+    {% csrf_token %}
+
+    {{ form.as_p}}
+
+    <button type="submit">
+        Guardar
+    </button>
+</form>
