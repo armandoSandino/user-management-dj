@@ -8,10 +8,12 @@
 </head>
 <body>
     <h1>
-        {{titulo}}
+        {{titulo}} 
     </h1>
     <h2>
-        {{sub_titulo}}
+        <!-- user, representa el nombre de usuario logueado, 
+            implicitamente Django no los proporciona cuando detecta que existe un contexto  autenticado-->
+        {{sub_titulo}} - {{user}}
     </h2>
     <br>
     <ul>
