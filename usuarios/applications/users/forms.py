@@ -23,7 +23,7 @@ class RegistrarUsuarioForm(forms.ModelForm):
             }
         )
     )
-    
+
     class Meta:
         # Definir modelo a implementar
         model = User
@@ -36,3 +36,12 @@ class RegistrarUsuarioForm(forms.ModelForm):
             'apellidos',
             'genero'
         )
+
+    # Validar contraseña, utiliza 'clean_' seguida del campo  a validar
+    def clean_repetir_contrasena(self):
+
+        if self.cleaned_data['contrasena'] != self.cleaned_data['repetir_contrasena']:
+            # Mostrar mensaje informativo
+            # add_error(campo, mensaje), muestra un mensaje en el campo especificado en su primer parametro
+            self.add_error('repetir_contrasena', 'Las contraseñas no son iguales..')
+        
