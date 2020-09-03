@@ -92,3 +92,28 @@ class LoginForm(forms.Form):
 
         return self.cleaned_data
 
+# Heredamos de 'forms.Form' y no de 'forms.ModelForm' por que no estamos dependiendo de ningun modelo en especifico
+class UpdatePasswordForm(forms.Form):
+        
+    contrasena_actual = forms.CharField(
+        label='Contraseña actual',
+        required=True,
+        widget= forms.PasswordInput(
+            attrs={
+                'placeholder': 'Ingrese la contraseña actual',
+                'style': '{padding: 1em}'
+            }
+        )
+    )      
+    contrasena_nueva = forms.CharField(
+        label='Contraseña nueva',
+        required=True,
+        widget= forms.PasswordInput(
+            attrs={
+                'placeholder': 'Ingrese la contraseña nueva',
+                'style': '{padding: 1em}'
+            }
+        )
+    )
+
+    

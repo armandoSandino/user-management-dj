@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Actualizar contraseña</title>
+</head>
+<body>
+    <h1>
+         <!-- user, representa los datos del usuario logueado, 
+            implicitamente Django no los proporciona cuando detecta que existe un contexto  autenticado-->
+      
+        Actualizar contraseña {{ user.get_full_name }}
+    </h1>
+    <br>
+    <form method="POST" >
+        {% csrf_token %}
+        {{ form.as_p}}
+        <button type="submit"> 
+            Actualizar
+        </button> 
+    </form>
+    
+</body>
+</html>

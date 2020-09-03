@@ -12,7 +12,11 @@ from django.views.generic.edit import (
 #Models
 from .models import User
 # Forms
-from .forms import RegistrarUsuarioForm, LoginForm
+from .forms import (
+    UpdatePasswordForm,
+    RegistrarUsuarioForm,
+     LoginForm
+) 
 
 class RegistrarUsuario(CreateView):
 
@@ -85,3 +89,37 @@ class Logout(View):
         return HttpResponseRedirect(
             reverse('users_app:login')
         )
+
+class UpdatePasswordView(FormView):
+
+    template_name = 'users/actualizar_contraseña.html'
+    
+    # Definir formulario personalizado a utilizar
+    form_class = UpdatePasswordForm
+    # redireccion
+    success_url = reverse_lazy('users_app:login')
+
+    def form_valid(self, form):
+        # Antes de cambiar verificar si la contraseña del usuario activo actualmente es igual a la ingresada
+        # self.request.user, nos retorna el usuario logueado, puede obtenerlo desde cualquier parte del sistema 
+        
+        # Verificar si el usuario existe
+        # El primer argumento debe ser identificado por el atributo USERNAME_FIELD del modelo User
+        # Si cambias el valor de USERNAME_FIELD por el de 'email' deberias de pasar como primer argumento
+        # el email a la funcion 'authenticate'
+        
+        usuario_actual = self.request.user
+
+        el_usuario = authenticate(
+            username=usuario_actual.username,
+            password=form.cleaned_data['contrasena_actual']
+        ) 
+        # Si esta logueado efectivamente puede cambiar la contraseña
+        if el_usuario:
+            new_pasword = form.cleaned_data['contrasena_nueva']
+            usuario_actual.set_password(new_pasword)
+            usuario_actual.save()
+
+        # Cerramos la sesion    
+        logout(self.request)
+        return super(UpdatePasswordView, self).form_valid(form)

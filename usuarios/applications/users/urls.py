@@ -4,7 +4,8 @@ from .views import (
     RegistrarUsuario,
     RegisterUsersView,
     Login,
-    Logout
+    Logout,
+    UpdatePasswordView
 ) 
 
 app_name = 'users_app'
@@ -24,5 +25,10 @@ urlpatterns = [
         'logout/',
         Logout.as_view(),
         name='cerrar-sesion'
+    ),
+    path(
+        'usuario/password/reset/',
+        UpdatePasswordView.as_view(),
+        name='update-pass'
     )
 ]
