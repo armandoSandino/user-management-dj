@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 import os
+import json
+from django.core.exceptions import ImproperlyConfigured
 from unipath import Path
 #from pathlib import Path
 
@@ -22,7 +24,22 @@ BASE_DIR  = Path(__file__).ancestor(3)
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'q6ltb_=0&=p&1ll*$p=%n)_*%7(i=!f6a1-bi(kr7jo3=0=95&'
+
+# Leemos el contenido del fichero secreto
+with open("secret.json") as f:
+    secreto = json.loads( f.read() )
+
+# Nos permite obtener variables secretas
+def get_secret(secret_name, secrets=secreto):
+    try:
+        return secrets[secret_name]
+    except:
+        msg = "La variable %s  no existe" %secret_name
+        raise ImproperlyConfigured(msg)
+
+SECRET_KEY = get_secret('SECRET_KEY')
+
+#SECRET_KEY = 'q6ltb_=0&=p&1ll*$p=%n)_*%7(i=!f6a1-bi(kr7jo3=0=95&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
