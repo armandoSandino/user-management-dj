@@ -3,7 +3,8 @@ from django.urls import path
 from .views import (
     RegistrarUsuario,
     RegisterUsersView,
-    Login
+    Login,
+    Logout
 ) 
 
 app_name = 'users_app'
@@ -18,5 +19,10 @@ urlpatterns = [
         'login/',
         Login.as_view(),
         name='login'
+    ),
+    path(
+        'logout/',
+        Logout.as_view(),
+        name='cerrar-sesion'
     )
 ]
