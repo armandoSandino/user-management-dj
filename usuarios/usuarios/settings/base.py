@@ -29,7 +29,7 @@ SECRET_KEY = 'q6ltb_=0&=p&1ll*$p=%n)_*%7(i=!f6a1-bi(kr7jo3=0=95&'
 
 # Application definition
 
-INSTALLED_APPS = [
+DJANGO_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -37,6 +37,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+# Definir apps locales
+LOCAL_APPS = []
+
+# Definir apps de terceros
+THIRD_PARTY_APPS = []
+
+# Definir todas las aplicaciones
+INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + THIRD_PARTY_APPS 
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -53,7 +61,7 @@ ROOT_URLCONF = 'usuarios.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [ ],
+        'DIRS': [ BASE_DIR.child('templates') ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
