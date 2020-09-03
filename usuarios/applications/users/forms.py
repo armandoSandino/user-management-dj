@@ -1,4 +1,6 @@
 from django import forms
+# Funcion para autenticar
+from django.contrib.auth import authenticate
 # Models
 from .models import User
 
@@ -69,4 +71,24 @@ class LoginForm(forms.Form):
             }
         )
     )
+
+    # sino le especificas sobre que campo quieres validar puedes simplemente indicar 'clean'
+    # Django ejecutara esta validacion antes de todas las demas que tengas definidas
+    def clean(self):
+        
+        cleaned_data = super(LoginForm, self).clean()
+
+        #Obtener datos
+        usuario = self.cleaned_data['nombre_de_usuario']
+        contrasena = self.cleaned_data['contrasena']
+
+        # El primer argumento debe ser identificado por el atributo USERNAME_FIELD del modelo User
+        # Si cambias el valor de USERNAME_FIELD por el de 'email' deberias de pasar como primer argumento
+        # el email a la funcion 'authenticate'
+
+        # Veriricar si esta autenticado
+        if not authenticate( username =usuario,password= contrasena):
+            raise forms.ValidationError('Las credenciales no son correctas')
+
+        return self.cleaned_data
 
