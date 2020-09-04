@@ -16,9 +16,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     nombres = models.CharField('Nombres', max_length=30, blank=True)
     apellidos = models.CharField('Apellidos', max_length=30, blank=True)
     genero = models.CharField('Genero', max_length=1, choices= GENERO_CHOICES,  blank=True) 
+    # Codigo de verificacion
+    codregistro = models.CharField(max_length=6, default=True)
 
     is_staff = models.BooleanField(default=False)
-
+    # Para al verificacion de una cuenta activa
+    is_active = models.BooleanField(default=False)
 
     
     # Especificar cual sera el nombre de usuario con el cual se utenticara el super usuario de Django
