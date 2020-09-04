@@ -3,6 +3,8 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
+#
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Generic views
 from  django.views.generic import CreateView, View
@@ -90,7 +92,8 @@ class Logout(View):
             reverse('users_app:login')
         )
 
-class UpdatePasswordView(FormView):
+#LoginRequiredMixin, indicara que solo usuarios autenticados pueden cambiar su contraseña
+class UpdatePasswordView(LoginRequiredMixin, FormView):
 
     template_name = 'users/actualizar_contraseña.html'
     
@@ -98,6 +101,9 @@ class UpdatePasswordView(FormView):
     form_class = UpdatePasswordForm
     # redireccion
     success_url = reverse_lazy('users_app:login')
+
+    # Si el usuario no esta logueado se le redigira a la siguiente ruta
+    login_url = reverse_lazy('users_app:login')
 
     def form_valid(self, form):
         # Antes de cambiar verificar si la contraseña del usuario activo actualmente es igual a la ingresada
