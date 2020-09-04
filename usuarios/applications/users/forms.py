@@ -117,7 +117,33 @@ class UpdatePasswordForm(forms.Form):
     )
 
 # Heredamos de 'forms.Form' y no de 'forms.ModelForm' por que no estamos dependiendo de ningun modelo en especifico
+
+
 class VerifiricacionForm(forms.Form):
 
     codigo_registro = forms.CharField(required=True)
-    
+
+    # THE_ID, viaja desde el FormView que implementa este Form
+    def __init__(self, THE_ID,  *args, **kwargs):
+        self.ID_USUARIO = THE_ID 
+        super(VerifiricacionForm, self).__init__(*args,**kwargs)
+
+    # Validar codigo, utiliza 'clean_' seguida del campo  a validar
+    def clean_codigo_registro(self):
+
+        codigo = self.cleaned_data['codigo_registro']
+
+        if  len(codigo) == 6:
+            
+            # Verificamos si el codigo y el id del usuario es valido
+            
+            activo = User.objects.validar_codigo_de_verificacion(
+                self.ID_USUARIO,
+                codigo
+            )
+            if not activo:
+                raise  forms.ValidationError('Error, el codigo de verificacion es incorrecto..')
+        else:
+            # add_error(campo, mensaje), muestra un mensaje en el campo especificado en su primer parametro
+            # self.add_error('codigo_registro')
+            raise forms.ValidationError('El codigo de verificacion es incorrecto..')

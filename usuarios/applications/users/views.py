@@ -56,7 +56,8 @@ class RegisterUsersView(FormView):
         codigo = generar_codigo()
 
         # Crear el usuario, create_user esta definida en los Managers
-        User.objects.create_user(
+        # datos_del_usuario, almacena la data del usuario luego de su creacion
+        datos_del_usuario = User.objects.create_user(
             usuario,
             form.cleaned_data['email'],
             form.cleaned_data['contrasena'],
@@ -74,8 +75,12 @@ class RegisterUsersView(FormView):
         send_mail(asunto, mensaje, email_remitente, [form.cleaned_data['email'], ] )
 
         #return super(RegisterUsersView, self).form_valid(form)
+        # En el segundo parametro del 'reverse' especificamos los parametros a pasarle a la ruta
         return HttpResponseRedirect(
-            reverse('users_app:verification-account')
+            reverse(
+                'users_app:verification-account',
+                kwargs={'pk': datos_del_usuario.id }
+            )
         )
 
 class CodeVerificationView(FormView):
@@ -86,9 +91,55 @@ class CodeVerificationView(FormView):
     # Ruta de redireccion
     success_url = reverse_lazy('users_app:login')
 
-    def form_valid( self, form):
+    # Para que en el Form  pueda acceder al 'kwargs' y obtener los valores del url
+    # debes mandarlo desde el FormView sobre escribiendo el get_form_kwargs
+    def get_form_kwargs(self):
+        kwargs = super(CodeVerificationView, self).get_form_kwargs()
+        # Enviamos el parametro de la url al Form
+        kwargs.update({
+            'THE_ID': self.kwargs['pk']
+        })
+        return kwargs
 
+    def form_valid( self, form):
+        #
+        # Si todo esta bien actualizaremos el campor is_active del registro
+        User.objects.filter(
+            id=self.kwargs['pk']
+        ).update(
+            is_active=True
+        )
         return super(CodeVerificationView, self).form_valid(form)
+        '''
+        codigo = form.cleaned_data['codigo_registro']
+
+        if len(codigo) == 6:
+            # Verificamos si el codigo y el id del usuario es valido
+            activo = User.objects.validar_codigo_de_verificacion(
+                id_user,
+                codigo
+            )
+            if not activo:
+                form.add_error('codigo_registro', 'Las contraseñas no son iguales..')
+                # raise forms.ValidationError("Document already exists in DB")
+                return HttpResponseRedirect(
+                    reverse(
+                        'users_app:verification-account',
+                        kwargs={'pk': id_user }
+                    )
+                )
+            else:
+                return super(CodeVerificationView, self).form_valid(form)
+        else:
+            return HttpResponseRedirect(
+                reverse(
+                    'users_app:verification-account',
+                    kwargs={'pk': id_user }
+                )
+            )
+            '''
+
+        
 
 class Login(FormView):
 

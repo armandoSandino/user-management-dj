@@ -33,7 +33,7 @@ urlpatterns = [
         name='update-pass'
     ),
     path(
-        'usuario/verification/',
+        'usuario/verification/<pk>/',
         CodeVerificationView.as_view(),
         name='verification-account'
     )

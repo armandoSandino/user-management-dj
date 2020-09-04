@@ -7,6 +7,11 @@
     <title>Confirmacion de cuenta</title>
 </head>
 <body>
+
+    <h3>
+        Ingrese el codigo de verificacion
+    </h3>
+    
     <form method="POST">
         {% csrf_token %} 
 
@@ -15,7 +20,7 @@
         <button type="submit">
             Confirmar
         </button>
-        
+
     </form>
 </body>
 </html>
