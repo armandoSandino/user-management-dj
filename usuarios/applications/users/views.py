@@ -1,5 +1,6 @@
 from django.shortcuts import render
-
+# For send email
+from django.core.mail import send_mail
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
@@ -17,8 +18,11 @@ from .models import User
 from .forms import (
     UpdatePasswordForm,
     RegistrarUsuarioForm,
-     LoginForm
+    LoginForm,
+    VerifiricacionForm
 ) 
+# Functions
+from .functions import generar_codigo
 
 class RegistrarUsuario(CreateView):
 
@@ -47,6 +51,9 @@ class RegisterUsersView(FormView):
     def form_valid( self, form):
         # Obtner los datos del form
         usuario = form.cleaned_data['username']
+        
+        # Generamos el cofigo para verificacion de la cuenta via email
+        codigo = generar_codigo()
 
         # Crear el usuario, create_user esta definida en los Managers
         User.objects.create_user(
@@ -56,9 +63,32 @@ class RegisterUsersView(FormView):
 
             nombres=form.cleaned_data['nombres'],
             apellidos =form.cleaned_data['apellidos'],
-            genero=form.cleaned_data['genero']
+            genero=form.cleaned_data['genero'],
+            codregistro=codigo
         )
-        return super(RegisterUsersView, self).form_valid(form)
+        # Enviar el codigo al correo del usuario
+        asunto = 'Confirmacion de correo'
+        mensaje= 'Codigo de verifricacion '+ codigo
+        email_remitente = 'jonwinlive@gmail.com'
+        #
+        send_mail(asunto, mensaje, email_remitente, [form.cleaned_data['email'], ] )
+
+        #return super(RegisterUsersView, self).form_valid(form)
+        return HttpResponseRedirect(
+            reverse('users_app:verification-account')
+        )
+
+class CodeVerificationView(FormView):
+    ''' Vista para la verificacion de cuenta '''
+    template_name = 'users/verification.html'
+    # Definir formulario
+    form_class = VerifiricacionForm
+    # Ruta de redireccion
+    success_url = reverse_lazy('users_app:login')
+
+    def form_valid( self, form):
+
+        return super(CodeVerificationView, self).form_valid(form)
 
 class Login(FormView):
 

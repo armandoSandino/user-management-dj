@@ -5,7 +5,8 @@ from .views import (
     RegisterUsersView,
     Login,
     Logout,
-    UpdatePasswordView
+    UpdatePasswordView,
+    CodeVerificationView
 ) 
 
 app_name = 'users_app'
@@ -30,5 +31,10 @@ urlpatterns = [
         'usuario/password/reset/',
         UpdatePasswordView.as_view(),
         name='update-pass'
+    ),
+    path(
+        'usuario/verification/',
+        CodeVerificationView.as_view(),
+        name='verification-account'
     )
 ]

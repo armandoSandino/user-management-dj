@@ -116,4 +116,8 @@ class UpdatePasswordForm(forms.Form):
         )
     )
 
+# Heredamos de 'forms.Form' y no de 'forms.ModelForm' por que no estamos dependiendo de ningun modelo en especifico
+class VerifiricacionForm(forms.Form):
+
+    codigo_registro = forms.CharField(required=True)
     
